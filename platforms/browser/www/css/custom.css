@@ -177,4 +177,40 @@ div{
 /*        .welcomescreen-closebtn{
         display: none!important;
       }
-*/        
+*/  
+.row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    -webkit-justify-content:  center !important;
+    justify-content: center !important;
+    -webkit-box-lines: multiple;
+    -moz-box-lines: multiple;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
+  }
+  .page-content {
+      background-image: url("../img/bg.png");
+  }
+
+  .row .col-33 {
+    -moz-box-shadow: inset 0 0 10px #000000 !important;
+    -moz-box-shadow: 0px 21px 29px -3px rgba(168,168,168,1) !important;
+    -webkit-box-shadow: 0px 21px 29px -11px rgba(168,168,168,1) !important;
+    -moz-box-shadow: 0px 21px 29px -11px rgba(168,168,168,1) !important;
+    box-shadow: 0px 21px 29px -11px rgba(168,168,168,1) !important;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+.bg-blue, a.bg-blue, .list-block .swipeout-actions-left a.bg-blue, .list-block .swipeout-actions-right a.bg-blue {
+    background-color: #84d2f1 !important;
+}

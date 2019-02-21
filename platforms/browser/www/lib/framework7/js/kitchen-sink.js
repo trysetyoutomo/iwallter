@@ -369,7 +369,7 @@ var Logged_username;
 // pubnub2.subscribe({channels: [pnChannel2]});
 
 // appennd backgroun hujau
-$$(".navbar-inner").addClass("bg-green");
+// $$(".navbar-inner").addClass("bg-green");
 
 function setLoginRainbow(jabberID)
 {
@@ -440,151 +440,151 @@ function getDistance(lat1, lon1, lat2, lon2, unit) {
     return dist
 }  
 
-Pusher.logToConsole = false;
-var pusher = new Pusher('3d0c6896d79a0df7db6e', {
-  cluster: 'ap1',
-  encrypted: true
-});
+// Pusher.logToConsole = false;
+// var pusher = new Pusher('3d0c6896d79a0df7db6e', {
+//   cluster: 'ap1',
+//   encrypted: true
+// });
 
-var channel = pusher.subscribe('my-channel');
-channel.bind('my-event', function(data) {
-  // alert(data.message);
-
-
-  if (data.tipe=="notif_panggilan_approved"){
-    console.log("1"+data.username);
-    console.log("2"+window.localStorage.getItem("username"));
-    if (data.username==window.localStorage.getItem("username")){
-        // jika orang manggil maka 
-       myApp.addNotification({
-        title: 'Halo',
-        message: data.pesan
-       });
-       var angka = parseInt($$(".order-qty-notif").html()) + 1;
-       $$(".order-qty-notif").html(angka);
-       $$(".order-qty-notif").css("display","inline-block");
-    }
+// var channel = pusher.subscribe('my-channel');
+// channel.bind('my-event', function(data) {
+//   // alert(data.message);
 
 
-  }  
-
-  if (data.tipe=="notif_panggilan_selesai"){
-    // console.log("1"+data.username);
-    // console.log("2"+window.localStorage.getItem("username"));
-    if (data.username==window.localStorage.getItem("username")){
-        // jika orang manggil maka 
-       myApp.addNotification({
-        title: 'Halo',
-        message: data.pesan
-       });
-       var angka = parseInt($$(".order-qty-notif").html()) + 1;
-       $$(".order-qty-notif").html(angka);
-       $$(".order-qty-notif").css("display","inline-block");
-    }
+//   if (data.tipe=="notif_panggilan_approved"){
+//     console.log("1"+data.username);
+//     console.log("2"+window.localStorage.getItem("username"));
+//     if (data.username==window.localStorage.getItem("username")){
+//         // jika orang manggil maka 
+//        myApp.addNotification({
+//         title: 'Halo',
+//         message: data.pesan
+//        });
+//        var angka = parseInt($$(".order-qty-notif").html()) + 1;
+//        $$(".order-qty-notif").html(angka);
+//        $$(".order-qty-notif").css("display","inline-block");
+//     }
 
 
-  }
+//   }  
+
+//   if (data.tipe=="notif_panggilan_selesai"){
+//     // console.log("1"+data.username);
+//     // console.log("2"+window.localStorage.getItem("username"));
+//     if (data.username==window.localStorage.getItem("username")){
+//         // jika orang manggil maka 
+//        myApp.addNotification({
+//         title: 'Halo',
+//         message: data.pesan
+//        });
+//        var angka = parseInt($$(".order-qty-notif").html()) + 1;
+//        $$(".order-qty-notif").html(angka);
+//        $$(".order-qty-notif").css("display","inline-block");
+//     }
 
 
-  if (data.tipe=="notif_panggilan"){
-    if (data.ukm_id==window.localStorage.getItem("ukm_id")){
-      myApp.addNotification({
-        title: 'Panggilan Baru',
-        message: 'Terdapat Pengguna yang memanggil!'
-      });
-      // $$(".notification-panggilan").addClass("blink_me");
-        var angka = parseInt($$(".panggilan-qty-notif").html()) + 1;
-       $$(".panggilan-qty-notif").html(angka);
-       $$(".panggilan-qty-notif").css("display","inline-block");
-      // $$(".bulat-notif").show();
-       audio.play();
-      try{
-
-      var pesan ;
-      if (data.pesan==""){
-         pesan = 'Pengguna yang memanggil kamu, ayo datangi dan dapatkan poin!'
-      }else{
-        pesan = data.pesan;
-      }
-
-      cordova.plugins.notification.local.schedule({
-          id: 1,
-          title: data.judul,
-          text: pesan,
-          foreground: true,
-          vibrate: true
-      });
-      cordova.plugins.notification.local.on('click', function (notification, eopts) {
-         // $$(".notification-panggilan").trigger("click");
-      });
-      // cordova.plugins.notification.local.schedule({
-      //     title: 'Panggilan Baru',
-      //     text: 'Terdapat Pengguna yang memanggil!',
-      //     foreground: true,
-      //     // attachments: ['file://img/rb-leipzig.jpg'],
-      //     vibrate: true,
-      //     icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzfXKe6Yfjr6rCtR6cMPJB8CqMAYWECDtDqH-eMnerHHuXv9egrw'
-      // });
+//   }
 
 
-        // actions: [
-        //     { id: 'yes', title: 'Yes' },
-        //     { id: 'no',  title: 'No' }
-        // ]
+//   if (data.tipe=="notif_panggilan"){
+//     if (data.ukm_id==window.localStorage.getItem("ukm_id")){
+//       myApp.addNotification({
+//         title: 'Panggilan Baru',
+//         message: 'Terdapat Pengguna yang memanggil!'
+//       });
+//       // $$(".notification-panggilan").addClass("blink_me");
+//         var angka = parseInt($$(".panggilan-qty-notif").html()) + 1;
+//        $$(".panggilan-qty-notif").html(angka);
+//        $$(".panggilan-qty-notif").css("display","inline-block");
+//       // $$(".bulat-notif").show();
+//        audio.play();
+//       try{
+
+//       var pesan ;
+//       if (data.pesan==""){
+//          pesan = 'Pengguna yang memanggil kamu, ayo datangi dan dapatkan poin!'
+//       }else{
+//         pesan = data.pesan;
+//       }
+
+//       cordova.plugins.notification.local.schedule({
+//           id: 1,
+//           title: data.judul,
+//           text: pesan,
+//           foreground: true,
+//           vibrate: true
+//       });
+//       cordova.plugins.notification.local.on('click', function (notification, eopts) {
+//          // $$(".notification-panggilan").trigger("click");
+//       });
+//       // cordova.plugins.notification.local.schedule({
+//       //     title: 'Panggilan Baru',
+//       //     text: 'Terdapat Pengguna yang memanggil!',
+//       //     foreground: true,
+//       //     // attachments: ['file://img/rb-leipzig.jpg'],
+//       //     vibrate: true,
+//       //     icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzfXKe6Yfjr6rCtR6cMPJB8CqMAYWECDtDqH-eMnerHHuXv9egrw'
+//       // });
+
+
+//         // actions: [
+//         //     { id: 'yes', title: 'Yes' },
+//         //     { id: 'no',  title: 'No' }
+//         // ]
 
      
-      var mp3URL = getMediaURL("sound/phone.mp3");
-      var media = new Media(mp3URL, null, mediaError);
-      media.setVolume(1.0);
-      media.play();
-      }catch(err){
-        // alert(err);
-      }
+//       var mp3URL = getMediaURL("sound/phone.mp3");
+//       var media = new Media(mp3URL, null, mediaError);
+//       media.setVolume(1.0);
+//       media.play();
+//       }catch(err){
+//         // alert(err);
+//       }
       
-      getListPanggilan();
-     } // ada
-  } // if ada notifikasi 
+//       getListPanggilan();
+//      } // ada
+//   } // if ada notifikasi 
 
 
 
-  if (data.tipe=="notif_panggilan_sudahada"){
-     if (data.username==window.localStorage.getItem("username")){
-        // jika orang manggil maka 
-       myApp.addNotification({
-        title: 'Ayo Datangi',
-        message: data.pesan
-       });
+//   if (data.tipe=="notif_panggilan_sudahada"){
+//      if (data.username==window.localStorage.getItem("username")){
+//         // jika orang manggil maka 
+//        myApp.addNotification({
+//         title: 'Ayo Datangi',
+//         message: data.pesan
+//        });
 
-         try{
+//          try{
 
-           cordova.plugins.notification.local.schedule({
-              id: 1,
-              title: 'Ayo Datangi',
-              text: data.pesan,
-              foreground: true,
-              vibrate: true
-          });
-          cordova.plugins.notification.local.on('click', function (notification, eopts) {
-               // myApp.addNotification({
-               //  title: 'Ayo Datangi',
-               //  message: data.pesan
-               // });
-               console.log("ato");
-          });
-
-
-
-         }catch(err){
-          console.log(err);
-         }
+//            cordova.plugins.notification.local.schedule({
+//               id: 1,
+//               title: 'Ayo Datangi',
+//               text: data.pesan,
+//               foreground: true,
+//               vibrate: true
+//           });
+//           cordova.plugins.notification.local.on('click', function (notification, eopts) {
+//                // myApp.addNotification({
+//                //  title: 'Ayo Datangi',
+//                //  message: data.pesan
+//                // });
+//                console.log("ato");
+//           });
 
 
-     }
 
-  }
+//          }catch(err){
+//           console.log(err);
+//          }
 
 
-});
+//      }
+
+//   }
+
+
+// });
 function getMediaURL(s) {
     if(device.platform.toLowerCase() === "android") return "/android_asset/www/" + s;
     return s;
@@ -925,7 +925,7 @@ function onOffline() {
 function onDeviceReady() {
 
     
-    initMap();
+    // initMap();
     cekLevel();
     getSlider();
     $('#realtime-on').hide();
@@ -7708,3 +7708,16 @@ $$('.open-password').on('click', function () {
 }catch(err){
     alert(err);
 }
+
+// $$('.tetew').click(function(){
+//   // $("#bg").attr('src',"img/picture1.jpg");
+//   // return false;
+//   alert("ngghgh");
+// });
+$$(document).on('click', '.wallet', function (e) {
+  var gambar = $(this).attr('gambar');
+  var pk = $(this).attr('value');
+  $("#change1").attr('src',gambar);
+
+  alert(pk);
+});

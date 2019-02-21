@@ -32,6 +32,14 @@ var app = {
 
     // Update DOM on a Received Event
     receivedEvent: function(id) {
+    window.addEventListener("batterystatus",onBatteryStatus,false);
+    function onBatteryStatus(status){
+
+    alert("Level : "+status.level+" is pluged :"+status.isPlugged);
+    document.getElementById("level").innerHTML = status.level;
+    document.getElementById("isPlugged").innerHTML = status.isPlugged;
+
+    }
         var parentElement = document.getElementById(id);
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
