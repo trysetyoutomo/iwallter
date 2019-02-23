@@ -1,4 +1,4 @@
-try{
+// try{
 
 
 var noPoi =[
@@ -1219,9 +1219,9 @@ function onDeviceReady() {
                 string = '<div class="swiper-slide" > '+
                 
                 '<div '+
-                'style="background-size:100%;background-repeat:no-repeat;height: 100%;width: 111%;margin-top: -17px;'+"background-image:url('"+v.image+"')"+'"'+'>'+
+                'style="background-size:100%;background-repeat:no-repeat;height: 100%;width: 100%;margin-top: -17px;'+"background-image:url('"+v.image+"')"+'"'+'>'+
            
-                '<center style="height:220px;background-color: rgba(255,255,255,0.5);padding-bottom: 9px;">'+
+                '<center style="height:220px;background-color: rgba(255,255,255,0.01);padding-bottom: 9px;">'+
                 '<div style="background-color:rgba(255,255,255,0);"><H2></H2> '+               
                 // ' <H4> '+v.alamat+'</H4> '+                
                 '<p class="buttons-row" >'+
@@ -4108,10 +4108,12 @@ $$(document).on('page:init', '.page[data-page="tambah-cart"]', function (e) {
 
 });
 $$(document).on('click', '.btn-refresh-order', function (e) {
-  var tabActive = $('.tabbar.pesanan a.active:not(.tertunda)').attr('href') 
-  if (tabActive == undefined) tabActive = "#tab-1"; 
-  getListOrder(window.localStorage.getItem("username"), tabActive);
-  console.log(tabActive);
+    var user_id = window.localStorage.getItem("username");
+    getSaldo(user_id);
+  // var tabActive = $('.tabbar.pesanan a.active:not(.tertunda)').attr('href') 
+  // if (tabActive == undefined) tabActive = "#tab-1"; 
+  // getListOrder(window.localStorage.getItem("username"), tabActive);
+  // console.log(tabActive);
 });
 
 $$(document).on('page:init', '.page[data-page="order"]', function (e) {
@@ -7903,9 +7905,9 @@ $$('.open-password').on('click', function () {
 });
 
 
-}catch(err){
-    alert(err);
-}
+// }catch(err){
+//     alert(err);
+// }
 
 // $$('.tetew').click(function(){
 //   // $("#bg").attr('src',"img/picture1.jpg");
@@ -7972,6 +7974,65 @@ $$(document).on('click', '.kirim_konfirmasi', function (e) {
     }
 });
 
+function refreshHistory(){
+$$("#ul-favorit-list").html("");
+$$.ajax({
+url : server+"/index.php?r=jenius/historyTransfer",
+data : "username="+window.localStorage.getItem("username"),
+success : function(r){
+    var data = JSON.parse(r);
+    $$.each(data.result,function(i,data){
+        /** logo destination*/
+        if (imageExists(data.wallet_id_dest_url)){
+            img_dest = data.wallet_id_dest_url;
+        } else{
+            img_dest = "img/no_image.jpg";
+        }
+
+        /** logo origin */
+        if(imageExists(data.wallet_id_origin_url)){
+            img_origin = data.wallet_id_origin_url;
+        } else {
+            img_origin = "img/no_image.jpg";
+        }
+        
+        var html =  
+        '<li class="hold-hapus-produk-" data-id='+data.id+'>'+
+        '<a href="#" class="item-link item-content">'+
+        '<div class="item-media">'+
+        '<img src="'+img_origin+'" class="custom-image-history">'+
+        '</div>'+
+        '<div class="item-inner" style="margin-left: 50px">'+
+        '<div class="item-title-row" style="background-image:url()">'+
+        '<div class="item-title" style="width: 150px;">'+
+        '<div style="margin-left: 50px">'+
+        '<i class="fa fa-angle-double-right"></i>'+
+        '<i class="fa fa-angle-double-right"></i>'+
+        '<i class="fa fa-angle-double-right"></i>'+
+        '</div>'+
+        '<b><i>'+data.transaction_date+'</i></b>'+
+        '</div>'+
+        '</div>'+
+        '<div class="item-title-row" style="background-image:url()">'+
+        '<div class="item-after" style="margin-left: 30px;">Rp. '+data.ammount+'</div>'+
+        '</div>'+
+        '</div>'+
+        '<div class="item-media">'+
+        '<img src="'+img_dest+'" class="custom-image-history" style="margin-left: -37px">'+
+        '</div>'+
+        '</a>'+
+        '</li>';
+      
+
+          $$("#ul-history-list").append(html);
+          // alert(html);
+        });
+        }
+
+        });
+}
+//         });
+// });
 // menampilkan data dari halaman transfer
 $$(document).on('page:init', '.page[data-page="konfirmasi"]', function (e) {
   var tampil1 = e.detail.page.query.tampil1;
@@ -8018,7 +8079,23 @@ function getSaldo(user_id){
       var  json = JSON.parse(r);
       if (json.success==true){
         $$.each(json.data,function(i,v){
-          $(".wallet[value='"+v.wallet_id+"']").find(".jml_wallet").html("Rp."+numberWithCommas(v.ammount));
+            // alert(v.isActive);
+          if (isNaN(v.isActive)){// jika tidak tersedia
+              $$(".wallet[value='"+v.wallet_id+"']").css("text-decoration","underline"); 
+              $(".wallet[value='"+v.wallet_id+"']").addClass("btn-harus-aktivasi"); 
+              // alert("123");
+              // $$(".wallet[value='"+v.wallet_id+"']").addClass("btn-aktivasi"); 
+          }else{ // jika tersedia
+              $$(".wallet[value='"+v.wallet_id+"']").find(".jml_wallet").html("Rp."+numberWithCommas(v.ammount));
+              $(".wallet[value='"+v.wallet_id+"']").removeClass("btn-harus-aktivasi"); 
+          }
+              // if (v.isActive=="1"){
+              // }else{
+                // alert("123");
+                  // $(".wallet[value='"+v.wallet_id+"']").find(".jml_wallet").html("Rp."+numberWithCommas(v.ammount));
+              // }
+          
+       
         });
       
       }
@@ -8026,6 +8103,59 @@ function getSaldo(user_id){
     }
   });
 }
+$$(document).on('click', '.btn-harus-aktivasi', function (e) {
+    e.preventDefault();
+    var wallet_id = $$(this).attr("value");
+    // var dialog = app.dialog.prompt('Enter your name');
+    // dialog.$el.find('input').val('John');
+   myApp.prompt('Silahkan Masukan Nomor Handphone ', 'Aktivasi',
+      function (value) {
+        // alert(value);
+        myApp.showPreloader();
+        $$(".modal-title").html(" Proses Pengiriman Kode OTP");
+        setTimeout(function(e){
+            myApp.hidePreloader();
+        },2000);
+
+        inputOTP(value,wallet_id);
+       
+      }
+    );
+});
+function inputOTP(nomor,wallet_id){
+    myApp.prompt('Silahkan Masukan kode OTP ', 'Aktivasi',
+      function (nilai) {
+         $$.ajax({
+    // https://35utech.com/jenius/index.php?r=jenius/transfer&user_id=1&wallet_origin_id=1&wallet_dest_id=2&ammount=3000&fee=100
+            url : server+"/index.php?r=jenius/SaveWalletUsers",
+            data : {
+                wallet_id : wallet_id,
+                user_name : "Try Setyo",
+                wallet_phone : nomor,
+                user_id : window.localStorage.getItem("username")
+            },
+            success:function(r){
+                      var  json = JSON.parse(r);
+                      if (json.status==true){
+                         myApp.addNotification({
+                          title: 'Berhasil!',
+                          message: json.message
+                        });
+                         getSaldo(window.localStorage.getItem("username"))
+                      }else{
+                        myApp.addNotification({
+                          title: 'Gagal!',
+                          message: json.message
+                        });
+                      }
+
+            }
+
+        });
+      }
+    ); 
+}
+
 $$(document).on('click', '.btn-fix-transfer', function (e) {
   $$.ajax({
     // https://35utech.com/jenius/index.php?r=jenius/transfer&user_id=1&wallet_origin_id=1&wallet_dest_id=2&ammount=3000&fee=100
@@ -8088,4 +8218,53 @@ $$(document).on('page:init', '.page[data-page="transfer"]', function (e) {
   // $("#tampil2").attr('value',tampil2);
   // $("#tampil2").attr('src',gambar);
   // alert(tampil2);
+});
+
+
+$$(document).on('click', '.saved_prom', function (e) {
+    var id_promo = $$(this).attr("data-id");
+    var user_id = window.localStorage.getItem("username")
+    // alert(id+" - "+user);
+    // alert("WEW");
+      $$.ajax({
+        url: server+'/index.php?r=jenius/savedPromo',
+        method: 'GET', 
+        data : {
+            id_promo: id_promo,
+            user_id: user_id
+        },
+        success:function(data){
+          var dataObj  = JSON.parse(data)
+          console.log(data);
+          if (dataObj.status) {
+            
+          //   /** encode username */
+          //   var encodeuser = btoa(dataObj.data.username);
+          //   window.localStorage.setItem('username', encodeuser)
+            
+            // customAlert('Berhasil Menambahkan Ke Favorite', 'Informasi');
+            myApp.addNotification({
+                title: 'Berhasil Menambahkan Ke Favorite',
+                message: data.message
+            });
+          } else {
+            myApp.addNotification({
+                title: dataObj.message,
+                message: 'Peringatan'
+            });
+            // customAlert(dataObj.message, 'Peringatan');
+          }
+        },
+        error:function(err){
+            myApp.addNotification({
+                title: 'Oops terjadi kesalahan',
+                message: 'Peringatan'
+            });
+          customAlert('Oops terjadi kesalahan', 'Peringatan');
+        }
+      });
+})
+
+$$(document).on('page:init', '.page[data-page="history-list"]', function (e) {
+    refreshHistory();
 });
