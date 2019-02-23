@@ -1,4 +1,6 @@
 try{
+
+
 var noPoi =[
     {
         "featureType": "all",
@@ -292,7 +294,7 @@ var myApp = new Framework7({
 // Expose Internal DOM library
 var $$ = Dom7;
 var marker ;
-var server = "http://gis.35utech.com";
+var server = "https://35utech.com/jenius";
 var markers = [] ;
 var markers_keliling = [] ;
 var map;
@@ -370,6 +372,58 @@ var Logged_username;
 
 // appennd backgroun hujau
 // $$(".navbar-inner").addClass("bg-green");
+
+
+// by Try Setyo Utomo
+ $$(document).on('click', '.btn-transfer', function (e) {
+   if (window.localStorage.getItem("isLogged")!="1"){
+     myApp.loginScreen();
+     exit;
+
+  }else{
+        mainView.router.load({
+        url:"transfer.html",
+        query:{
+          id: "1"
+        }    
+      });
+  }
+ });
+
+ $$(document).on('click', '.btn-history', function (e) {
+   if (window.localStorage.getItem("isLogged")!="1"){
+     myApp.loginScreen();
+     exit;
+
+  }else{
+        mainView.router.load({
+        url:"history.html",
+        query:{
+          id: "1"
+        }    
+      });
+  }
+ });
+
+  $$(document).on('click', '.btn-saved', function (e) {
+   if (window.localStorage.getItem("isLogged")!="1"){
+     myApp.loginScreen();
+     exit;
+
+  }else{
+        mainView.router.load({
+        url:"savedpromo.html",
+        query:{
+          id: "1"
+        }    
+      });
+  }
+ });
+
+
+
+
+ // end by try Setyo Utomo
 
 function setLoginRainbow(jabberID)
 {
@@ -1126,31 +1180,100 @@ function onDeviceReady() {
 }
 
 
-// function checkGPS(){
-//   try {
+// create by try setyo utomo
+ function getSlider(){
+      var username = "";
+      if (window.localStorage.getItem("isLogged")=="1"){ 
+        username = window.localStorage.getItem("username");
+      }else{
+        username = "null";
+      }
+      $$.ajax({
+          url : server+"/index.php?r=jenius/showslide",
+          // data : "username="+username,
+          success : function(r){
 
-//   }catch(err){
-//     alert(err);
-//      var options = {enableHighAccuracy: true,maximumAge: 3600000}
-//      var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
-//      function onSuccess(position) {
-//         $$("#val-lat").val(position.coords.latitude);
-//         $$("#val-lon").val(position.coords.longitude);
-//      };
-//      function onError(error) {
-//         alert('code: '    + error.code    + '\n' + 'message: ' + error.message + '\n');
-//      }
-//      alert($$("#val-lat").val());
-//   }
-// }
+              var data = JSON.parse(r);
+            // alert(data);
 
 
- // $$(document).on('click', '.btn-panggil-login', function (e) {
- //     Android.showLogin();
- //    $("#defaultReal").realperson();
- // });
- // $$(document).on('click', '.order-qty-notif', function (e) {
- // });
+              var string; 
+              if (data.length!=0){
+                var i = 0;
+                var url_first = "";
+
+               $$.each(data,function(i,v){
+
+                var status_hide;
+                if (v.tipe=="3"){
+                  status_hide = ";display:none;";
+                }else{
+                  status_hide = ";display:block;";
+                }
+                
+                if (i==0){
+                  url_first = server+'/images/bast/'+v.gambar;
+                }
+
+                string = '<div class="swiper-slide" > '+
+                
+                '<div '+
+                'style="background-size:cover;height: 100%;width: 100%;margin-top: -17px;'+"background-image:url('"+server+'/images/bast/'+v.gambar+"')"+'"'+
+                '>'+
+           
+                '<center style="height: 100%;background-color: rgba(255,255,255,0.5);padding-bottom: 9px;">'+
+                '<div style="background-color:rgba(255,255,255,0);"><H2>'+v.nama_umkm+'</H2> '+               
+                ' <H4> '+v.alamat+'</H4> '+                
+                '<p class="buttons-row" >'+
+                '&nbsp;&nbsp;'+
+                '<a onclick="getDirection('+v.lat+','+v.lon+')"  style="width:10%;background-color:transparent!important'+status_hide+'" class=" external button button-big button-fill button-raised bg-orange">'+
+                '<i style="position: relative;top: 5px;color:#D85404;font-size:30px"  class="material-icons">directions</i>'+
+                '</a>'+
+                // '<a href="http://maps.google.com/maps?saddr='+$$("#val-lat").val()+','+$$("#val-lon").val()+'&daddr='+v.lat+','+v.lon+'"  style="width:10%;background-color:transparent!important" class=" external button button-big button-fill button-raised bg-orange">'+
+                // '<i style="position: relative;top: 5px;color:#D85404;font-size:30px"  class="fa fa-google"></i>'+
+                // '</a>'+
+                '<a ukm-id="'+v.id+'"  href="tabs-swipeable.html?id='+v.ukm_id+'"   style="width:10%;background-color:transparent!important" class="  button button-big button-fill button-raised bg-orange">'+
+                '<i class="fa fa-info fa-2x" style="color:#D85404"></i> '+
+                '</a>'+
+                '</p>'+
+                '</div></center>'+ 
+                 '</div>'+
+                // ' <a class="button button-big button-fill button-raised color-orange "> </a> '+ 
+                               
+
+                '</div>';
+
+                $$("#iklan-wrapper").append(string);
+                i++;
+
+               });
+              }
+              else{
+                // 'style="background-image:url('+"'/img/iklan disini.png'"+')" >'+
+                  var string = '<div class="swiper-slide" > '+
+                    '<h1 style="color:black">Tidak ada iklan tersedia</h1>'+
+                  '</div>';
+
+                  $$("#iklan-wrapper").append(string);
+                }
+
+                var mySwiper1 = new Swiper('.swiper-1', {
+                  pagination:'.swiper-1 .swiper-pagination',
+                  spaceBetween: 50,
+                  preloadImages: false,
+                  lazyLoading: true
+                });
+                // alert("123");
+
+                // $$(".swiper-slide-active").css("background-image",url_first);
+
+
+              }
+        });
+
+    }
+
+
  $$(document).on('click', '.notification-panggilan', function (e) {
     audio.pause();
     audio.currentTime = 0;
@@ -1302,7 +1425,7 @@ $$(document).on('change','#Ukm_tipe', function (e) {
  $$(document).on('click', '.btn-tracking-ukm', function (e) {
    if (window.localStorage.getItem("isLogged")!="1"){
      $("#defaultReal").realperson();
-     Android.showLogin();
+     myApp.loginScreen();
      exit;
 
   }
@@ -1324,12 +1447,14 @@ $$(document).on('change','#Ukm_tipe', function (e) {
            // alert(JSON.stringify(e));
           }
     });
- });
+ }); 
+
+
  $$(document).on('click', '.btn-panggil-ukm', function (e) {
 
   if (window.localStorage.getItem("isLogged")!="1"){
      $("#defaultReal").realperson();
-     Android.showLogin();
+     myApp.loginScreen();
      exit;
 
   }
@@ -2526,7 +2651,7 @@ $$(document).on('page:init', '.page[data-page="cekout"]', function (e) {
 
 $$(document).on("click",".btn-add-cart",function(e){
   if (window.localStorage.getItem("isLogged")!="1"){
-      Android.showLogin();
+      myApp.loginScreen();
      exit;
   }
     var id = $(this).attr("ukm_id");
@@ -2891,7 +3016,7 @@ function onSuccess(imageURI) {
 
   $$(document).on('click', '.UMKM_tel', function (e) {
    if (window.localStorage.getItem("isLogged")!="1"){
-       Android.showLogin();
+       myApp.loginScreen();
      }else{
       var jid = $(this).attr("jabberID");
        Android.showTampil(jid);
@@ -2901,7 +3026,7 @@ function onSuccess(imageURI) {
 
   $$(document).on('click', '.UMKM_sms', function (e) {
    if (window.localStorage.getItem("isLogged")!="1"){
-       Android.showLogin();
+       myApp.loginScreen();
 
     }else{
       var jid = $(this).attr("jabberID");
@@ -3024,7 +3149,7 @@ function onSuccess(imageURI) {
   });
   $$(document).on('click', '.btn-favorite', function (e) {
     if (window.localStorage.getItem("username")==null || window.localStorage.getItem("username")=="" || window.localStorage.getItem("username")=="undefined" ){
-      Android.showLogin();
+      myApp.loginScreen();
       //  myApp.addNotification({
       //     message: "Silahkan Login terlebih dahulu",
       //     buttonkey:  {
@@ -3890,7 +4015,7 @@ getNewsSticker();
 
 // 1 Slide Per View, 50px Between
     $$(".btn-rekomendasi").on("click",function(e){
-      
+      alert("123");
       e.preventDefault();
 
       $$.ajax({
@@ -3932,97 +4057,7 @@ getNewsSticker();
         });
     });
 
-    function getSlider(){
-      var username = "";
-      if (window.localStorage.getItem("isLogged")=="1"){ 
-        username = window.localStorage.getItem("username");
-      }else{
-        username = "null";
-      }
-      $$.ajax({
-          url : server+"/index.php?r=gis/getSlider",
-          data : "username="+username,
-          success : function(r){
-
-              var data = JSON.parse(r);
-            // alert(data);
-
-
-              var string; 
-              if (data.length!=0){
-                var i = 0;
-                var url_first = "";
-
-               $$.each(data,function(i,v){
-
-                var status_hide;
-                if (v.tipe=="3"){
-                  status_hide = ";display:none;";
-                }else{
-                  status_hide = ";display:block;";
-                }
-                
-                if (i==0){
-                  url_first = server+'/images/bast/'+v.gambar;
-                }
-
-                string = '<div class="swiper-slide" > '+
-                
-                '<div '+
-                'style="background-size:cover;height: 100%;width: 100%;margin-top: -17px;'+"background-image:url('"+server+'/images/bast/'+v.gambar+"')"+'"'+
-                '>'+
-           
-                '<center style="height: 100%;background-color: rgba(255,255,255,0.5);padding-bottom: 9px;">'+
-                '<div style="background-color:rgba(255,255,255,0);"><H2>'+v.nama_umkm+'</H2> '+               
-                ' <H4> '+v.alamat+'</H4> '+                
-                '<p class="buttons-row" >'+
-                '&nbsp;&nbsp;'+
-                '<a onclick="getDirection('+v.lat+','+v.lon+')"  style="width:10%;background-color:transparent!important'+status_hide+'" class=" external button button-big button-fill button-raised bg-orange">'+
-                '<i style="position: relative;top: 5px;color:#D85404;font-size:30px"  class="material-icons">directions</i>'+
-                '</a>'+
-                // '<a href="http://maps.google.com/maps?saddr='+$$("#val-lat").val()+','+$$("#val-lon").val()+'&daddr='+v.lat+','+v.lon+'"  style="width:10%;background-color:transparent!important" class=" external button button-big button-fill button-raised bg-orange">'+
-                // '<i style="position: relative;top: 5px;color:#D85404;font-size:30px"  class="fa fa-google"></i>'+
-                // '</a>'+
-                '<a ukm-id="'+v.id+'"  href="tabs-swipeable.html?id='+v.ukm_id+'"   style="width:10%;background-color:transparent!important" class="  button button-big button-fill button-raised bg-orange">'+
-                '<i class="fa fa-info fa-2x" style="color:#D85404"></i> '+
-                '</a>'+
-                '</p>'+
-                '</div></center>'+ 
-                 '</div>'+
-                // ' <a class="button button-big button-fill button-raised color-orange "> </a> '+ 
-                               
-
-                '</div>';
-
-                $$("#iklan-wrapper").append(string);
-                i++;
-
-               });
-              }
-              else{
-                // 'style="background-image:url('+"'/img/iklan disini.png'"+')" >'+
-                  var string = '<div class="swiper-slide" > '+
-                    '<h1 style="color:black">Tidak ada iklan tersedia</h1>'+
-                  '</div>';
-
-                  $$("#iklan-wrapper").append(string);
-                }
-
-                var mySwiper1 = new Swiper('.swiper-1', {
-                  pagination:'.swiper-1 .swiper-pagination',
-                  spaceBetween: 50,
-                  preloadImages: false,
-                  lazyLoading: true
-                });
-                // alert("123");
-
-                // $$(".swiper-slide-active").css("background-image",url_first);
-
-
-              }
-        });
-
-    }
+   
     getSlider();
 
 
@@ -4620,28 +4655,33 @@ $$(document).on('click','.btn-berita', function () {
    });
     myApp.closePanel("right");
 }); 
+$$(document).on('click','.btn-user-sign', function () {
+   myApp.loginScreen();
+
+});
 $$(document).on('click','.btn-user-out', function () {
-       $$.ajax({
-            url : server+"/index.php?r=gis/logout",
-            data :"username="+window.localStorage.getItem("username"),
-            success : function(r){
-            Android.logoutRainbow();
-                var data = JSON.parse(r);
-                if (data.success){
+       // $$.ajax({
+       //      url : server+"/index.php?r=gis/logout",
+       //      data :"username="+window.localStorage.getItem("username"),
+       //      success : function(r){
+       //      Android.logoutRainbow();
+       //          var data = JSON.parse(r);
+       //          if (data.success){
                       window.localStorage.removeItem("isLogged");
                       window.localStorage.removeItem("username");
-                      window.localStorage.removeItem("ukm_id");
-                      window.localStorage.removeItem("ukm_tipe");
-                      window.localStorage.removeItem("ukm_nama");
-                      window.localStorage.removeItem("level");
-                      window.localStorage.removeItem("kategori_favorite");
-                      window.localStorage.removeItem("td_favorite");
-                      window.localStorage.removeItem("delivery");
-                      window.localStorage.removeItem("minimal");
+                      cekLevel();
+                      // window.localStorage.removeItem("ukm_id");
+                      // window.localStorage.removeItem("ukm_tipe");
+                      // window.localStorage.removeItem("ukm_nama");
+                      // window.localStorage.removeItem("level");
+                      // window.localStorage.removeItem("kategori_favorite");
+                      // window.localStorage.removeItem("td_favorite");
+                      // window.localStorage.removeItem("delivery");
+                      // window.localStorage.removeItem("minimal");
                       // window.localStorage.removeItem("");
 
-                       cekLevel();
-                       myApp.closePanel();
+        //                cekLevel();
+        //                myApp.closePanel();
                        myApp.addNotification({
                         message: "Berhasil Keluar ",
                         button: {
@@ -4650,18 +4690,18 @@ $$(document).on('click','.btn-user-out', function () {
                             },
                             hold : 1000
                        });
-                       $$(".btn-user-out").hide();
-                        //Android.logoutRainbow();
-                      // setTimeout(function(e){                   
-                      //  window.location.reload();
-                      // },1000);
-                }
+        //                $$(".btn-user-out").hide();
+        //                 //Android.logoutRainbow();
+        //               // setTimeout(function(e){                   
+        //               //  window.location.reload();
+        //               // },1000);
+        //         }
                 
 
-            },error: function(e){
-              alert(JSON.stringify(e));
-            }
-        });
+        //     },error: function(e){
+        //       alert(JSON.stringify(e));
+        //     }
+        // });
   // alert("keluar");
   // keliling["08122178"].setMap(null);
 
@@ -6322,39 +6362,41 @@ $$('#form-login').on('form:success', function (e) {
       // alert(data);
       data = JSON.parse(data);
 
-       if (data.status){
+       if (data.success){
+        // alert(JSON.stringify(data));
+
         // alert(data.isfirstlogin);
         // alert(data.ukm.id);
          // window.localStorage.setItem("isfirstlogin", data.isfirstlogin);
-         window.localStorage.setItem("isfirstlogin", data.isfirstlogin);
-         window.localStorage.setItem("level", data.level);
+         // window.localStorage.setItem("isfirstlogin", data.isfirstlogin);
+         // window.localStorage.setItem("level", data.level);
          window.localStorage.setItem("isLogged", 1);
-         window.localStorage.setItem("username", data.username);
-         window.localStorage.setItem("pemilik", data.ukm.pemilik);
-         window.localStorage.setItem("tanggal_akhir", data.ukm.tanggal_akhir);
-         window.localStorage.setItem("ukm_id", data.ukm.id);
-         window.localStorage.setItem("ukm_tipe", data.ukm.tipe);
-         window.localStorage.setItem("ukm_nama", data.ukm.nama);
-         window.localStorage.setItem("sisa", data.ukm.sisa);
-         window.localStorage.setItem("point", data.poin.poin);
-         window.localStorage.setItem("minimal", data.ukm.minimal);
-         window.localStorage.setItem("delivery", data.ukm.delivery);
-         var array_temp = [];
-         $$.each(data.kategori_favorite,function(i,v){
-          array_temp.push(v.jenis);
-         });
+         window.localStorage.setItem("username", data.data.id);
+         // window.localStorage.setItem("pemilik", data.ukm.pemilik);
+         // window.localStorage.setItem("tanggal_akhir", data.ukm.tanggal_akhir);
+         // window.localStorage.setItem("ukm_id", data.ukm.id);
+         // window.localStorage.setItem("ukm_tipe", data.ukm.tipe);
+         // window.localStorage.setItem("ukm_nama", data.ukm.nama);
+         // window.localStorage.setItem("sisa", data.ukm.sisa);
+         // window.localStorage.setItem("point", data.poin.poin);
+         // window.localStorage.setItem("minimal", data.ukm.minimal);
+         // window.localStorage.setItem("delivery", data.ukm.delivery);
+         // var array_temp = [];
+         // $$.each(data.kategori_favorite,function(i,v){
+         //  array_temp.push(v.jenis);
+         // });
 
-         window.localStorage.setItem("kategori_favorite",JSON.stringify(array_temp));
+         // window.localStorage.setItem("kategori_favorite",JSON.stringify(array_temp));
 
-          var array_temp = [];
-         $$.each(data.td_favorite,function(i,v){
-          array_temp.push(v.ukm_id);
-         });
+         //  var array_temp = [];
+         // $$.each(data.td_favorite,function(i,v){
+         //  array_temp.push(v.ukm_id);
+         // });
 
-         window.localStorage.setItem("td_favorite",JSON.stringify(array_temp));
+         // window.localStorage.setItem("td_favorite",JSON.stringify(array_temp));
          
-         cekLevel();
-          clearRegisterLogin();         
+         // cekLevel();
+         //  clearRegisterLogin();         
          
         myApp.closeModal('.login-screen');
         if (data.isfirstlogin==1){ 
@@ -6647,6 +6689,21 @@ $$('#form-register').on('form:success', function (e) {
   function cekLevel(){
 
 
+
+     var isLogged = window.localStorage.getItem("isLogged");
+    if (isLogged=="1"){
+        $$(".btn-user-out").show();
+        $$(".btn-user-sign").hide();
+    }else{
+        $$(".btn-user-out").hide();
+        $$(".btn-user-sign").show();
+    }
+
+
+
+
+   
+
     var lev = window.localStorage.getItem("ukm_tipe");
      
      if (lev=="3" || lev=="2"  || lev=="1"  || lev=="4"  || lev=="5"){ //jika penjual kliling
@@ -6827,7 +6884,7 @@ $$('#form-register').on('form:success', function (e) {
       // alert("masuk 2");
       // if (window.localStorage.getItem("isRegistering")==true){
        
-       Android.showLogin();
+       myApp.loginScreen();
        cekLoginVerified();
       // }
 
@@ -6966,7 +7023,7 @@ $$('#form-register').on('form:success', function (e) {
 
     }else{
       // alert("masuk 2");
-       Android.showLogin();
+       myApp.loginScreen();
        cekLoginVerified();
     }
 
@@ -7003,7 +7060,7 @@ $$('#form-register').on('form:success', function (e) {
 
      //          }else{
      //            // alert("masuk 2");
-     //             Android.showLogin();
+     //             myApp.loginScreen();
      //             cekLoginVerified();
      //          }
      //          // alert(lurah);
