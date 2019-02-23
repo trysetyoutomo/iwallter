@@ -214,3 +214,10 @@ div{
 .bg-blue, a.bg-blue, .list-block .swipeout-actions-left a.bg-blue, .list-block .swipeout-actions-right a.bg-blue {
     background-color: #84d2f1 !important;
 }
+.saved_prom{    
+    display: block;
+    position: absolute;
+    right: 10px;
+    margin-top: -50px;
+    font-size: 18px;
+}

@@ -292,7 +292,7 @@ var myApp = new Framework7({
 // Expose Internal DOM library
 var $$ = Dom7;
 var marker ;
-var server = "http://gis.35utech.com";
+var server = "http://35utech.com/jenius";
 var markers = [] ;
 var markers_keliling = [] ;
 var map;
@@ -4450,54 +4450,98 @@ function getListOrder(username, tabActive){
     }); // end click delete
 
    function refreshFavoritku(){
+    // alert("TEST");
        $$("#ul-favorit-list").html("");
         $$.ajax({
-        url : server+"/index.php?r=gis/getFavorite",
+        url : server+"/index.php?r=jenius/listPromo",
         data : "username="+window.localStorage.getItem("username"),
         success : function(r){
-          // alert(r);
             var data = JSON.parse(r);
+            console.log(data);
 
-            $$.each(data,function(i,data){
-              // alert(data);
-              var html =  '<li  style="top: 0px;" ukm_id="'+data.id+'" class=" tr-fav swipeout transitioning">'+
-              '<div class="swipeout-content" style="">'+
-              '<a href="#" class="item-link item-content">'+
-              '<div class="item-inner">'+
-              '<div class="item-title-row">'+
-              '<div class="item-title">'+data.nama+'</div>'+
-              '<div class="item-after">'+data.tinput+' </div>'+
-              '</div>'+
-              '<div class="item-subtitle">'+data.nama_kategori+'</div>'+
-              // '<div class="item-text">Lokasi</div>
-              '</div>'+
-              '</a>'+
-              '</div>'+
-              '<div class="swipeout-actions-right  ">'+
-              // '<a ukm-id="'+data.id+'"   class="pending-acc demo-mark bg-green  " style="left: 0px;"><i class="fa fa-check" ></i></a>'+
-              // '<a ukm-id="'+data.id+'"   class="pending-reject demo-mark bg-red  " style="left: 0px;"><i class="fa fa-times" ></i></a>'+
-                '<a ukm-id="'+data.id+'" href="tabs-swipeable.html?id='+data.id+'"    class="pending-info demo-mark bg-orange  " style="left: 0px;"><i class="fa fa-info" ></i></a>'+
-                // '<a ukm-id="'+data.id+'" href="tabs-swipeable.html?id='+data.id+'"    class="external demo-mark bg-blue  " style="left: 0px;"><i class="fa fa-marker" ></i></a>'+
-                 '<a onClick="getDirection('+data.lat+','+data.lon+');" >'+
-                  '<i class="material-icons  md-30">directions</i>'+
-                 '</a>'+
-
-                 '<a href="#"  ukm_id="'+data.id+'" class="btn-delete-fav"  >'+
-                  '<i class="fa fa-times"></i>'+
-                 '</a>'+
-
-                '<a href="http://maps.google.com/maps?saddr='+$$("#val-lat").val()+','+$$("#val-lon").val()+'&daddr='+data.lat+','+data.lon+'" lat="'+data.lat+'" class="link external bg-blue"  lon="'+data.lon+'" class="" style="left: 0px;"><i class="material-icons  md-24 ">directions</i> <i class="fa fa-google"></i></a>'+
-
-              '</div>'+
-              '</li>';
+            $$.each(data.result,function(i,data){
+                if (imageExists(data.wallet_logo)){
+                    img = data.wallet_logo;
+                }else{
+                    img = "img/no_image.jpg";
+                }
+              var html =  '<li class="hold-hapus-produk-" data-id="'+data.id+'" >'+
+                    '<a href="#" class="item-link item-content">'+
+                    '<div class="item-media"><img src="'+img+'" width="80"></div>'+
+                    '<div class="item-inner">'+
+                      '<div class="item-title-row" style="background-image:url()">'+
+                        '<div class="item-title" style="width: 150px;"><b><i>'+data.store+'</i></b></div>'+
+                      '</div>'+
+                      '<div class="item-title-row" style="background-image:url()">'+
+                        '<div class="item-after" style="height: 150px;">'+data.description+'</div>'+
+                      '</div>'+
+                      '<i class="fa fa-heart saved_prom" aria-hidden="true"></i>'+
+                      // '<div class="item-text" style="width:80px">'+
+                      //   '<i style="float:none;display:none" class="fa fa-plus-square fa-2x btn-add-qty"></i>&nbsp;'+
+                      //   '<input readonly item_id="'+v.id+'" ukm_id="'+v.id+'" class="order-qty-final"  type="text"  style="width:40px;border:1px solid gray;padding:5px;display:inline-block;float:right" />'+
+                      //   '&nbsp;<i style="display:none" class="fa fa-minus-square fa-2x btn-min-qty" ></i>'
+                      // '</div>'+
+                      // '</div>'+
+                    '</div>'+
+                    '</a>'+
+                '</li>';
 
               $$("#ul-favorit-list").append(html);
+              // alert(html);
             });
 
         },error: function(e){
           alert(JSON.stringify(e));
         }
       });
+      //  $$("#ul-favorit-list").html("");
+      //   $$.ajax({
+      //   url : server+"/index.php?r=gis/getFavorite",
+      //   data : "username="+window.localStorage.getItem("username"),
+      //   success : function(r){
+      //     // alert(r);
+      //       var data = JSON.parse(r);
+
+      //       $$.each(data,function(i,data){
+      //         // alert(data);
+      //         var html =  '<li  style="top: 0px;" ukm_id="'+data.id+'" class=" tr-fav swipeout transitioning">'+
+      //         '<div class="swipeout-content" style="">'+
+      //         '<a href="#" class="item-link item-content">'+
+      //         '<div class="item-inner">'+
+      //         '<div class="item-title-row">'+
+      //         '<div class="item-title">'+data.nama+'</div>'+
+      //         '<div class="item-after">'+data.tinput+' </div>'+
+      //         '</div>'+
+      //         '<div class="item-subtitle">'+data.nama_kategori+'</div>'+
+      //         // '<div class="item-text">Lokasi</div>
+      //         '</div>'+
+      //         '</a>'+
+      //         '</div>'+
+      //         '<div class="swipeout-actions-right  ">'+
+      //         // '<a ukm-id="'+data.id+'"   class="pending-acc demo-mark bg-green  " style="left: 0px;"><i class="fa fa-check" ></i></a>'+
+      //         // '<a ukm-id="'+data.id+'"   class="pending-reject demo-mark bg-red  " style="left: 0px;"><i class="fa fa-times" ></i></a>'+
+      //           '<a ukm-id="'+data.id+'" href="tabs-swipeable.html?id='+data.id+'"    class="pending-info demo-mark bg-orange  " style="left: 0px;"><i class="fa fa-info" ></i></a>'+
+      //           // '<a ukm-id="'+data.id+'" href="tabs-swipeable.html?id='+data.id+'"    class="external demo-mark bg-blue  " style="left: 0px;"><i class="fa fa-marker" ></i></a>'+
+      //            '<a onClick="getDirection('+data.lat+','+data.lon+');" >'+
+      //             '<i class="material-icons  md-30">directions</i>'+
+      //            '</a>'+
+
+      //            '<a href="#"  ukm_id="'+data.id+'" class="btn-delete-fav"  >'+
+      //             '<i class="fa fa-times"></i>'+
+      //            '</a>'+
+
+      //           '<a href="http://maps.google.com/maps?saddr='+$$("#val-lat").val()+','+$$("#val-lon").val()+'&daddr='+data.lat+','+data.lon+'" lat="'+data.lat+'" class="link external bg-blue"  lon="'+data.lon+'" class="" style="left: 0px;"><i class="material-icons  md-24 ">directions</i> <i class="fa fa-google"></i></a>'+
+
+      //         '</div>'+
+      //         '</li>';
+
+      //         $$("#ul-favorit-list").append(html);
+      //       });
+
+      //   },error: function(e){
+      //     alert(JSON.stringify(e));
+      //   }
+      // });
    }
   $$(document).on('page:init', '.page[data-page="view_order"]', function (e) {
       // var id = e.detail.id;
