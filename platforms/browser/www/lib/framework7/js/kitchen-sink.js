@@ -7816,23 +7816,26 @@ $$('.open-password').on('click', function () {
 //   alert("ngghgh");
 // });
 $$(document).on('click', '.wallet', function (e) {
+  var change1 =  $("#change1").attr('nilai');
+  var change2 =  $("#change2").attr('nilai');
   var gambar = $(this).attr('gambar');
   var pk = $(this).attr('value');
-  
+
   var change1 =  $("#change1").attr('nilai');
+  var change2 =  $("#change2").attr('nilai');
   if(change1 == ""){
     $("#change1").attr('src',gambar);
+    $("#change1").attr('nilai',pk);
   }else{
     $("#change2").attr('src',gambar);
+    $("#change2").attr('nilai',pk);
   }
-  $("#change1").attr('nilai',pk);
+
 });
 
-//        myApp.addNotification({
-//         title: 'Halo',
-//         message: data.pesan
-//        });
 
+
+//reset data
 $$(document).on('click', '.reset', function (e) {
   $("#change1").attr('nilai',"");
   $("#change2").attr('nilai',"");
@@ -7840,3 +7843,152 @@ $$(document).on('click', '.reset', function (e) {
   $("#change2").attr('src',"");
 });
 
+// mengirim data ke halaman konfirmasi
+$$(document).on('click', '.kirim_konfirmasi', function (e) {
+  var change1 =  $("#change1").attr('nilai');
+  var change2 =  $("#change2").attr('nilai');
+  if (change1==""|| change2==""){
+    myApp.addNotification({
+     title: 'oops',
+     message: 'Wallet Belum Dipilih'
+    });
+
+}else if (change1 == change2){
+  myApp.addNotification({
+   title: 'oops',
+   message: 'Wallet Tidak Boleh Sama'
+  });
+
+}else{
+  var gambar1 =  $("#change1").attr('src');
+  var gambar2 =  $("#change2").attr('src');
+       mainView.router.load({
+       url:"konfirmasi.html",
+       query:{
+         tampil1: change1,
+         tampil2: change2,
+         tampilimg1:gambar1,
+         tampilimg2:gambar2
+         
+       }    
+     });
+    }
+});
+
+// menampilkan data dari halaman transfer
+$$(document).on('page:init', '.page[data-page="konfirmasi"]', function (e) {
+  var tampil1 = e.detail.page.query.tampil1;
+  var tampil2 = e.detail.page.query.tampil2;
+  var tampilimg1 = e.detail.page.query.tampilimg1;
+  var tampilimg2 = e.detail.page.query.tampilimg2;
+  // var tampil2 = e.detail.page.query.change2;
+  // var tampil_gambar1 = e.detail.page.query.change2;
+  // var tampil_gambar2 = e.detail.page.query.change2;
+
+  $("#tampil1").attr('src',tampilimg1);
+  $("#tampil2").attr('src',tampilimg2);
+  $("#tampil1").attr('value',tampil1);
+  $("#tampil2").attr('value',tampil2);
+  // $("#tampil2").attr('src',gambar);
+  // alert(tampil2);
+});
+
+$$(document).on('click', '.btn-berhasil-kembali', function (e) {
+  mainView.router.load({
+    url:"transfer.html",
+  });
+});
+$$(document).on('page:init', '.page[data-page="page-berhasil"]', function (e) {
+  var tampilimg1 = e.detail.page.query.tampilimg1;
+  var tampilimg2 = e.detail.page.query.tampilimg2;
+
+  // alert(tampilimg1);
+
+  $("#tampil1_berhasil").attr('src',tampilimg1);
+  $("#tampil2_berhasil").attr('src',tampilimg2);
+});
+
+
+// menampilkan data dari halaman transfer
+function getSaldo(user_id){
+  $$.ajax({
+		url : server+"/index.php?r=jenius/getSaldo",
+		data : "user_id="+user_id,
+		beforeSend : function(e){
+		},
+		success : function(r){
+      // alert(r)  ;
+      var  json = JSON.parse(r);
+      if (json.success==true){
+        $$.each(json.data,function(i,v){
+          $(".wallet[value='"+v.wallet_id+"']").find(".jml_wallet").html("Rp."+numberWithCommas(v.ammount));
+        });
+      
+      }
+      
+    }
+  });
+}
+$$(document).on('click', '.btn-fix-transfer', function (e) {
+  $$.ajax({
+    // https://35utech.com/jenius/index.php?r=jenius/transfer&user_id=1&wallet_origin_id=1&wallet_dest_id=2&ammount=3000&fee=100
+		url : server+"/index.php?r=jenius/transfer",
+		data : {
+      user_id : window.localStorage.getItem("username"),
+      wallet_origin_id : $$("#tampil1").attr("value"),
+      wallet_dest_id : $$("#tampil2").attr("value"),
+      ammount : $$("#nominal").val(),
+      fee : 0,
+    },
+		beforeSend : function(e){
+      
+    },
+		success : function(r){
+      // alert(r)  ;
+      var  json = JSON.parse(r);
+      if (json.success==true){
+        myApp.addNotification({
+          title: 'Berhasil!',
+          message: json.message
+        });
+        var gambar1 =  $$("#tampil1").attr('src');
+        var gambar2 =  $$("#tampil2").attr('src');      
+        // alert(gambar1);
+        mainView.router.load({
+          url:"berhasil.html",
+            query:{
+              tampilimg1:gambar1,
+              tampilimg2:gambar2
+            }    
+        });
+        // alert("123");
+  
+
+      }else{
+        myApp.addNotification({
+          title: 'Gagal!',
+          message: json.message
+        });
+      }
+    }
+    });
+});
+$$(document).on('page:init', '.page[data-page="transfer"]', function (e) {
+  var user_id = window.localStorage.getItem("username");
+  getSaldo(user_id);
+  // alert("123");
+  // var tampil1 = e.detail.page.query.tampil1;
+  // var tampil2 = e.detail.page.query.tampil2;
+  // var tampilimg1 = e.detail.page.query.tampilimg1;
+  // var tampilimg2 = e.detail.page.query.tampilimg2;
+  // // var tampil2 = e.detail.page.query.change2;
+  // // var tampil_gambar1 = e.detail.page.query.change2;
+  // // var tampil_gambar2 = e.detail.page.query.change2;
+
+  // $("#tampil1").attr('src',tampilimg1);
+  // $("#tampil2").attr('src',tampilimg2);
+  // $("#tampil1").attr('value',tampil1);
+  // $("#tampil2").attr('value',tampil2);
+  // $("#tampil2").attr('src',gambar);
+  // alert(tampil2);
+});
