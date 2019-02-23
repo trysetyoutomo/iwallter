@@ -4484,6 +4484,101 @@ function getListOrder(username, tabActive){
       });
     }); // end click delete
 
+   function refreshSavedpromo(){
+    // alert("TEST");
+       $$("#ul-favorit-list").html("");
+        $$.ajax({
+        url : server+"/index.php?r=jenius/listSavedPromo",
+        data : "user_id="+window.localStorage.getItem("username"),
+        success : function(r){
+            var data = JSON.parse(r);
+            console.log(data);
+
+            $$.each(data.result,function(i,data){
+                if (imageExists(data.logo)){
+                    img = data.logo;
+                }else{
+                    img = "img/no_image.jpg";
+                }
+              var html =  '<li class="hold-hapus-produk-" data-id="'+data.id+'" >'+
+                    '<a href="#" class="item-link item-content">'+
+                    '<div class="item-media"><img src="'+img+'" width="80"></div>'+
+                    '<div class="item-inner">'+
+                      '<div class="item-title-row" style="background-image:url()">'+
+                        '<div class="item-title" style="width: 150px;"><b><i>'+data.store+'</i></b></div>'+
+                      '</div>'+
+                      '<div class="item-title-row" style="background-image:url()">'+
+                        '<div class="item-after" style="height: 150px;">'+data.description+'</div>'+
+                      '</div>'+
+                      '<i class="fa fa-heart saved_prom" data-id="'+data.id+'" aria-hidden="true"></i>'+
+                      // '<div class="item-text" style="width:80px">'+
+                      //   '<i style="float:none;display:none" class="fa fa-plus-square fa-2x btn-add-qty"></i>&nbsp;'+
+                      //   '<input readonly item_id="'+v.id+'" ukm_id="'+v.id+'" class="order-qty-final"  type="text"  style="width:40px;border:1px solid gray;padding:5px;display:inline-block;float:right" />'+
+                      //   '&nbsp;<i style="display:none" class="fa fa-minus-square fa-2x btn-min-qty" ></i>'
+                      // '</div>'+
+                      // '</div>'+
+                    '</div>'+
+                    '</a>'+
+                '</li>';
+
+              $$("#ul-favorit-list").append(html);
+              // alert(html);
+            });
+
+        },error: function(e){
+          alert(JSON.stringify(e));
+        }
+      });
+      //  $$("#ul-favorit-list").html("");
+      //   $$.ajax({
+      //   url : server+"/index.php?r=gis/getFavorite",
+      //   data : "username="+window.localStorage.getItem("username"),
+      //   success : function(r){
+      //     // alert(r);
+      //       var data = JSON.parse(r);
+
+      //       $$.each(data,function(i,data){
+      //         // alert(data);
+      //         var html =  '<li  style="top: 0px;" ukm_id="'+data.id+'" class=" tr-fav swipeout transitioning">'+
+      //         '<div class="swipeout-content" style="">'+
+      //         '<a href="#" class="item-link item-content">'+
+      //         '<div class="item-inner">'+
+      //         '<div class="item-title-row">'+
+      //         '<div class="item-title">'+data.nama+'</div>'+
+      //         '<div class="item-after">'+data.tinput+' </div>'+
+      //         '</div>'+
+      //         '<div class="item-subtitle">'+data.nama_kategori+'</div>'+
+      //         // '<div class="item-text">Lokasi</div>
+      //         '</div>'+
+      //         '</a>'+
+      //         '</div>'+
+      //         '<div class="swipeout-actions-right  ">'+
+      //         // '<a ukm-id="'+data.id+'"   class="pending-acc demo-mark bg-green  " style="left: 0px;"><i class="fa fa-check" ></i></a>'+
+      //         // '<a ukm-id="'+data.id+'"   class="pending-reject demo-mark bg-red  " style="left: 0px;"><i class="fa fa-times" ></i></a>'+
+      //           '<a ukm-id="'+data.id+'" href="tabs-swipeable.html?id='+data.id+'"    class="pending-info demo-mark bg-orange  " style="left: 0px;"><i class="fa fa-info" ></i></a>'+
+      //           // '<a ukm-id="'+data.id+'" href="tabs-swipeable.html?id='+data.id+'"    class="external demo-mark bg-blue  " style="left: 0px;"><i class="fa fa-marker" ></i></a>'+
+      //            '<a onClick="getDirection('+data.lat+','+data.lon+');" >'+
+      //             '<i class="material-icons  md-30">directions</i>'+
+      //            '</a>'+
+
+      //            '<a href="#"  ukm_id="'+data.id+'" class="btn-delete-fav"  >'+
+      //             '<i class="fa fa-times"></i>'+
+      //            '</a>'+
+
+      //           '<a href="http://maps.google.com/maps?saddr='+$$("#val-lat").val()+','+$$("#val-lon").val()+'&daddr='+data.lat+','+data.lon+'" lat="'+data.lat+'" class="link external bg-blue"  lon="'+data.lon+'" class="" style="left: 0px;"><i class="material-icons  md-24 ">directions</i> <i class="fa fa-google"></i></a>'+
+
+      //         '</div>'+
+      //         '</li>';
+
+      //         $$("#ul-favorit-list").append(html);
+      //       });
+
+      //   },error: function(e){
+      //     alert(JSON.stringify(e));
+      //   }
+      // });
+   }
+
    function refreshFavoritku(){
     // alert("TEST");
        $$("#ul-favorit-list").html("");
@@ -4510,7 +4605,7 @@ function getListOrder(username, tabActive){
                       '<div class="item-title-row" style="background-image:url()">'+
                         '<div class="item-after" style="height: 150px;">'+data.description+'</div>'+
                       '</div>'+
-                      '<i class="fa fa-heart saved_prom" aria-hidden="true"></i>'+
+                      '<i class="fa fa-heart-o saved_prom" data-id="'+data.id+'" aria-hidden="true"></i>'+
                       // '<div class="item-text" style="width:80px">'+
                       //   '<i style="float:none;display:none" class="fa fa-plus-square fa-2x btn-add-qty"></i>&nbsp;'+
                       //   '<input readonly item_id="'+v.id+'" ukm_id="'+v.id+'" class="order-qty-final"  type="text"  style="width:40px;border:1px solid gray;padding:5px;display:inline-block;float:right" />'+
@@ -4636,6 +4731,13 @@ function getListOrder(username, tabActive){
 
       // var data = getListOrderDagang(id);
       // alert(JSON.stringify(data));
+  });
+
+  $$(document).on('page:init', '.page[data-page="saved-promo-list"]', function (e) {
+    refreshSavedpromo();
+     $$('.refresh-saved-promo').on('click', function () {
+        refreshSavedpromo();
+     });
   });
 
   $$(document).on('page:init', '.page[data-page="favorite-list"]', function (e) {
@@ -7839,4 +7941,48 @@ $$(document).on('click', '.reset', function (e) {
   $("#change1").attr('src',"");
   $("#change2").attr('src',"");
 });
+
+$$(document).on('click', '.saved_prom', function (e) {
+    var id_promo = $$(this).attr("data-id");
+    var user_id = window.localStorage.getItem("username")
+    // alert(id+" - "+user);
+    // alert("WEW");
+      $$.ajax({
+        url: server+'/index.php?r=jenius/savedPromo',
+        method: 'GET', 
+        data : {
+            id_promo: id_promo,
+            user_id: user_id
+        },
+        success:function(data){
+          var dataObj  = JSON.parse(data)
+          console.log(data);
+          if (dataObj.status) {
+            
+          //   /** encode username */
+          //   var encodeuser = btoa(dataObj.data.username);
+          //   window.localStorage.setItem('username', encodeuser)
+            
+            // customAlert('Berhasil Menambahkan Ke Favorite', 'Informasi');
+            myApp.addNotification({
+                title: 'Berhasil Menambahkan Ke Favorite',
+                message: data.message
+            });
+          } else {
+            myApp.addNotification({
+                title: dataObj.message,
+                message: 'Peringatan'
+            });
+            // customAlert(dataObj.message, 'Peringatan');
+          }
+        },
+        error:function(err){
+            myApp.addNotification({
+                title: 'Oops terjadi kesalahan',
+                message: 'Peringatan'
+            });
+          customAlert('Oops terjadi kesalahan', 'Peringatan');
+        }
+      });
+})
 
