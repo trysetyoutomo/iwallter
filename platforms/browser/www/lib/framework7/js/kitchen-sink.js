@@ -977,9 +977,10 @@ function onOffline() {
 
 
 function onDeviceReady() {
+    setTimeout(function(){
+      $$('.splash').remove(); 
+    }, 2000);
 
-    
-    // initMap();
     cekLevel();
     getSlider();
     $('#realtime-on').hide();
