@@ -1,4 +1,4 @@
-try{
+// try{
 
 
 var noPoi =[
@@ -4108,10 +4108,12 @@ $$(document).on('page:init', '.page[data-page="tambah-cart"]', function (e) {
 
 });
 $$(document).on('click', '.btn-refresh-order', function (e) {
-  var tabActive = $('.tabbar.pesanan a.active:not(.tertunda)').attr('href') 
-  if (tabActive == undefined) tabActive = "#tab-1"; 
-  getListOrder(window.localStorage.getItem("username"), tabActive);
-  console.log(tabActive);
+    var user_id = window.localStorage.getItem("username");
+    getSaldo(user_id);
+  // var tabActive = $('.tabbar.pesanan a.active:not(.tertunda)').attr('href') 
+  // if (tabActive == undefined) tabActive = "#tab-1"; 
+  // getListOrder(window.localStorage.getItem("username"), tabActive);
+  // console.log(tabActive);
 });
 
 $$(document).on('page:init', '.page[data-page="order"]', function (e) {
@@ -7903,9 +7905,9 @@ $$('.open-password').on('click', function () {
 });
 
 
-}catch(err){
-    alert(err);
-}
+// }catch(err){
+//     alert(err);
+// }
 
 // $$('.tetew').click(function(){
 //   // $("#bg").attr('src',"img/picture1.jpg");
@@ -7972,59 +7974,65 @@ $$(document).on('click', '.kirim_konfirmasi', function (e) {
     }
 });
 
- function refreshHistory(){
-    $$("#ul-favorit-list").html("");
-    $$.ajax({
-    url : server+"/index.php?r=jenius/historyTransfer",
-    data : "username="+window.localStorage.getItem("username"),
-    success : function(r){
-        var data = JSON.parse(r);
-        $$.each(data.result,function(i,data){
-            /** logo destination*/
-            if (imageExists(data.wallet_id_dest_url)){
-                img_dest = data.wallet_id_dest_url;
-            } else{
-                img_dest = "img/no_image.jpg";
-            }
+function refreshHistory(){
+$$("#ul-favorit-list").html("");
+$$.ajax({
+url : server+"/index.php?r=jenius/historyTransfer",
+data : "username="+window.localStorage.getItem("username"),
+success : function(r){
+    var data = JSON.parse(r);
+    $$.each(data.result,function(i,data){
+        /** logo destination*/
+        if (imageExists(data.wallet_id_dest_url)){
+            img_dest = data.wallet_id_dest_url;
+        } else{
+            img_dest = "img/no_image.jpg";
+        }
 
-            /** logo origin */
-            if(imageExists(data.wallet_id_origin_url)){
-                img_origin = data.wallet_id_origin_url;
-            } else {
-                img_origin = "img/no_image.jpg";
-            }
-            
-            var html =  
-                `<li class="hold-hapus-produk-" data-id=`+data.id+`>
-                    <a href="#" class="item-link item-content">
-                        <div class="item-media">
-                            <img src="`+img_origin+`" class="custom-image-history">
-                        </div>
-                        <div class="item-inner" style="margin-left: 50px">
-                            <div class="item-title-row" style="background-image:url()">
-                                <div class="item-title" style="width: 150px;">
-                                    <div style="margin-left: 50px">
-                                        <i class="fa fa-angle-double-right"></i>
-                                        <i class="fa fa-angle-double-right"></i>
-                                        <i class="fa fa-angle-double-right"></i>
-                                    </div>
-                                    <b><i>`+data.transaction_date+`</i></b>
-                                </div>
-                            </div>
-                            <div class="item-title-row" style="background-image:url()">
-                                <div class="item-after" style="margin-left: 30px;">Rp. `+data.ammount+`</div>
-                            </div>
-                        </div>
-                        <div class="item-media">
-                            <img src="`+img_dest+`" class="custom-image-history" style="margin-left: -37px">
-                        </div>
-                    </a>
-                </li>`
-          
+        /** logo origin */
+        if(imageExists(data.wallet_id_origin_url)){
+            img_origin = data.wallet_id_origin_url;
+        } else {
+            img_origin = "img/no_image.jpg";
+        }
+        
+        var html =  
+        '<li class="hold-hapus-produk-" data-id='+data.id+'>'+
+        '<a href="#" class="item-link item-content">'+
+        '<div class="item-media">'+
+        '<img src="'+img_origin+'" class="custom-image-history">'+
+        '</div>'+
+        '<div class="item-inner" style="margin-left: 50px">'+
+        '<div class="item-title-row" style="background-image:url()">'+
+        '<div class="item-title" style="width: 150px;">'+
+        '<div style="margin-left: 50px">'+
+        '<i class="fa fa-angle-double-right"></i>'+
+        '<i class="fa fa-angle-double-right"></i>'+
+        '<i class="fa fa-angle-double-right"></i>'+
+        '</div>'+
+        '<b><i>'+data.transaction_date+'</i></b>'+
+        '</div>'+
+        '</div>'+
+        '<div class="item-title-row" style="background-image:url()">'+
+        '<div class="item-after" style="margin-left: 30px;">Rp. '+data.ammount+'</div>'+
+        '</div>'+
+        '</div>'+
+        '<div class="item-media">'+
+        '<img src="'+img_dest+'" class="custom-image-history" style="margin-left: -37px">'+
+        '</div>'+
+        '</a>'+
+        '</li>';
+      
 
-              $$("#ul-history-list").append(html);
-              // alert(html);
-            });
+          $$("#ul-history-list").append(html);
+          // alert(html);
+        });
+        }
+
+        });
+}
+//         });
+// });
 // menampilkan data dari halaman transfer
 $$(document).on('page:init', '.page[data-page="konfirmasi"]', function (e) {
   var tampil1 = e.detail.page.query.tampil1;
@@ -8071,7 +8079,22 @@ function getSaldo(user_id){
       var  json = JSON.parse(r);
       if (json.success==true){
         $$.each(json.data,function(i,v){
-          $(".wallet[value='"+v.wallet_id+"']").find(".jml_wallet").html("Rp."+numberWithCommas(v.ammount));
+            // alert(v.isActive);
+          if (isNaN(v.isActive)){// jika tidak tersedia
+              $$(".wallet[value='"+v.wallet_id+"']").css("text-decoration","underline"); 
+              $(".wallet[value='"+v.wallet_id+"']").addClass("btn-harus-aktivasi"); 
+              // alert("123");
+              // $$(".wallet[value='"+v.wallet_id+"']").addClass("btn-aktivasi"); 
+          }else{ // jika tersedia
+              $$(".wallet[value='"+v.wallet_id+"']").find(".jml_wallet").html("Rp."+numberWithCommas(v.ammount));
+          }
+              // if (v.isActive=="1"){
+              // }else{
+                // alert("123");
+                  // $(".wallet[value='"+v.wallet_id+"']").find(".jml_wallet").html("Rp."+numberWithCommas(v.ammount));
+              // }
+          
+       
         });
       
       }
@@ -8079,6 +8102,33 @@ function getSaldo(user_id){
     }
   });
 }
+$$(document).on('click', '.btn-harus-aktivasi', function (e) {
+    e.preventDefault();
+    // var dialog = app.dialog.prompt('Enter your name');
+    // dialog.$el.find('input').val('John');
+   myApp.prompt('Silahkan Masukan Nomor Handphone ', 'Aktivasi',
+      function (value) {
+        // alert(value);
+        myApp.showPreloader();
+        $$(".modal-title").html(" Proses Pengiriman Kode OTP");
+        setTimeout(function(e){
+            myApp.hidePreloader();
+        },2000);
+
+        inputOTP(value);
+       
+      }
+    );
+});
+function inputOTP(nomor){
+    myApp.prompt('Silahkan Masukan kode OTP ', 'Aktivasi',
+      function (nilai) {
+        alert(nomor);
+        alert(nilai);
+      }
+    ); 
+}
+
 $$(document).on('click', '.btn-fix-transfer', function (e) {
   $$.ajax({
     // https://35utech.com/jenius/index.php?r=jenius/transfer&user_id=1&wallet_origin_id=1&wallet_dest_id=2&ammount=3000&fee=100
@@ -8142,3 +8192,4 @@ $$(document).on('page:init', '.page[data-page="transfer"]', function (e) {
   // $("#tampil2").attr('src',gambar);
   // alert(tampil2);
 });
+
