@@ -7717,7 +7717,25 @@ $$('.open-password').on('click', function () {
 $$(document).on('click', '.wallet', function (e) {
   var gambar = $(this).attr('gambar');
   var pk = $(this).attr('value');
-  $("#change1").attr('src',gambar);
-
-  alert(pk);
+  
+  var change1 =  $("#change1").attr('nilai');
+  if(change1 == ""){
+    $("#change1").attr('src',gambar);
+  }else{
+    $("#change2").attr('src',gambar);
+  }
+  $("#change1").attr('nilai',pk);
 });
+
+//        myApp.addNotification({
+//         title: 'Halo',
+//         message: data.pesan
+//        });
+
+$$(document).on('click', '.reset', function (e) {
+  $("#change1").attr('nilai',"");
+  $("#change2").attr('nilai',"");
+  $("#change1").attr('src',"");
+  $("#change2").attr('src',"");
+});
+
