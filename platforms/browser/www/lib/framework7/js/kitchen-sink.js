@@ -1193,8 +1193,8 @@ function onDeviceReady() {
           // data : "username="+username,
           success : function(r){
 
+            // alert(r);
               var data = JSON.parse(r);
-            // alert(data);
 
 
               var string; 
@@ -1202,39 +1202,33 @@ function onDeviceReady() {
                 var i = 0;
                 var url_first = "";
 
-               $$.each(data,function(i,v){
-
-                var status_hide;
-                if (v.tipe=="3"){
-                  status_hide = ";display:none;";
-                }else{
-                  status_hide = ";display:block;";
-                }
+               $$.each(data.result,function(i,v){
+                // alert(i);
+                // var status_hide;
+                // if (v.tipe=="3"){
+                //   status_hide = ";display:none;";
+                // }else{
+                //   status_hide = ";display:block;";
+                // }
                 
-                if (i==0){
-                  url_first = server+'/images/bast/'+v.gambar;
-                }
-
+                // if (i==0){
+                //   url_first = server+'/images/bast/'+v.gambar;
+                // }
+                // alert(v.id);
+                // alert(JSON.stringify(v));
                 string = '<div class="swiper-slide" > '+
                 
                 '<div '+
-                'style="background-size:cover;height: 100%;width: 100%;margin-top: -17px;'+"background-image:url('"+server+'/images/bast/'+v.gambar+"')"+'"'+
-                '>'+
+                'style="background-size:100%;background-repeat:no-repeat;height: 100%;width: 111%;margin-top: -17px;'+"background-image:url('"+v.image+"')"+'"'+'>'+
            
-                '<center style="height: 100%;background-color: rgba(255,255,255,0.5);padding-bottom: 9px;">'+
-                '<div style="background-color:rgba(255,255,255,0);"><H2>'+v.nama_umkm+'</H2> '+               
-                ' <H4> '+v.alamat+'</H4> '+                
+                '<center style="height:220px;background-color: rgba(255,255,255,0.5);padding-bottom: 9px;">'+
+                '<div style="background-color:rgba(255,255,255,0);"><H2></H2> '+               
+                // ' <H4> '+v.alamat+'</H4> '+                
                 '<p class="buttons-row" >'+
                 '&nbsp;&nbsp;'+
-                '<a onclick="getDirection('+v.lat+','+v.lon+')"  style="width:10%;background-color:transparent!important'+status_hide+'" class=" external button button-big button-fill button-raised bg-orange">'+
-                '<i style="position: relative;top: 5px;color:#D85404;font-size:30px"  class="material-icons">directions</i>'+
-                '</a>'+
                 // '<a href="http://maps.google.com/maps?saddr='+$$("#val-lat").val()+','+$$("#val-lon").val()+'&daddr='+v.lat+','+v.lon+'"  style="width:10%;background-color:transparent!important" class=" external button button-big button-fill button-raised bg-orange">'+
                 // '<i style="position: relative;top: 5px;color:#D85404;font-size:30px"  class="fa fa-google"></i>'+
                 // '</a>'+
-                '<a ukm-id="'+v.id+'"  href="tabs-swipeable.html?id='+v.ukm_id+'"   style="width:10%;background-color:transparent!important" class="  button button-big button-fill button-raised bg-orange">'+
-                '<i class="fa fa-info fa-2x" style="color:#D85404"></i> '+
-                '</a>'+
                 '</p>'+
                 '</div></center>'+ 
                  '</div>'+
@@ -6509,6 +6503,7 @@ $$('#form-login').on('form:success', function (e) {
       data = JSON.parse(data);
 
        if (data.success){
+        // alert(data.data[0].id);
         // alert(JSON.stringify(data));
 
         // alert(data.isfirstlogin);
@@ -6517,7 +6512,7 @@ $$('#form-login').on('form:success', function (e) {
          // window.localStorage.setItem("isfirstlogin", data.isfirstlogin);
          // window.localStorage.setItem("level", data.level);
          window.localStorage.setItem("isLogged", 1);
-         window.localStorage.setItem("username", data.data.id);
+         window.localStorage.setItem("username", data.data[0].id);
          // window.localStorage.setItem("pemilik", data.ukm.pemilik);
          // window.localStorage.setItem("tanggal_akhir", data.ukm.tanggal_akhir);
          // window.localStorage.setItem("ukm_id", data.ukm.id);
@@ -7992,3 +7987,63 @@ $$(document).on('click', '.saved_prom', function (e) {
   }
 })
 
+$$(document).on('page:init', '.page[data-page="history-list"]', function (e) {
+    refreshHistory();
+    $$('.refresh-history').on('click', function () {
+        refreshHistory();
+    });
+});
+
+ function refreshHistory(){
+    $$("#ul-favorit-list").html("");
+    $$.ajax({
+    url : server+"/index.php?r=jenius/historyTransfer",
+    data : "username="+window.localStorage.getItem("username"),
+    success : function(r){
+        var data = JSON.parse(r);
+        $$.each(data.result,function(i,data){
+            if (imageExists(data.wallet_id_dest_url)){
+                img_dest = data.wallet_id_dest_url;
+            } else if(imageExists(data.wallet_id_origin_url)){
+                img_origin = data.wallet_id_origin_url;
+            }
+            else{
+                img_dest = "img/no_image.jpg";
+                img_origin = "img/no_image.jpg";
+            }
+
+            console.log(img_origin);
+
+            
+            // var html =  
+              //   `<li class="hold-hapus-produk-" data-id=`+data.id+`>
+              //       <a href="#" class="item-link item-content">
+              //           <div class="item-media">
+              //               <img src="`+img_origin+`" width="80">
+              //           </div>
+              //           <div class="item-inner">
+              //               <div class="item-title-row" style="background-image:url()">
+              //                   <div class="item-title" style="width: 150px;">
+              //                       <b><i>`+data.transaction_date+`</i></b>
+              //                   </div>
+              //               </div>
+              //               <div class="item-title-row" style="background-image:url()">
+              //                   <div class="item-after" style="height: 150px;">Rp. `+data.ammount+`</div>
+              //               </div>
+              //           </div>
+              //           <div class="item-media">
+              //               <img src="`+img+`" width="80">
+              //           </div>
+              //       </a>
+              //   </li>`
+          
+
+              // $$("#ul-history-list").append(html);
+              // alert(html);
+            });
+
+        },error: function(e){
+          alert(JSON.stringify(e));
+        }
+      });
+   }
