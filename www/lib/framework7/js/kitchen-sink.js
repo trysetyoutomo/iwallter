@@ -4510,7 +4510,7 @@ function getListOrder(username, tabActive){
                       '<div class="item-title-row" style="background-image:url()">'+
                         '<div class="item-after" style="height: 150px;">'+data.description+'</div>'+
                       '</div>'+
-                      '<i class="fa fa-heart saved_prom" data-id="'+data.id+'" aria-hidden="true"></i>'+
+                      '<i class="fa fa-heart saved_prom_1" data-id="'+data.id+'" aria-hidden="true"></i>'+
                       // '<div class="item-text" style="width:80px">'+
                       //   '<i style="float:none;display:none" class="fa fa-plus-square fa-2x btn-add-qty"></i>&nbsp;'+
                       //   '<input readonly item_id="'+v.id+'" ukm_id="'+v.id+'" class="order-qty-final"  type="text"  style="width:40px;border:1px solid gray;padding:5px;display:inline-block;float:right" />'+
@@ -7947,6 +7947,11 @@ $$(document).on('click', '.saved_prom', function (e) {
     var user_id = window.localStorage.getItem("username")
     // alert(id+" - "+user);
     // alert("WEW");
+    if (window.localStorage.getItem("isLogged")!="1"){
+     myApp.loginScreen();
+     exit;
+
+  }else{
       $$.ajax({
         url: server+'/index.php?r=jenius/savedPromo',
         method: 'GET', 
@@ -7984,5 +7989,6 @@ $$(document).on('click', '.saved_prom', function (e) {
           customAlert('Oops terjadi kesalahan', 'Peringatan');
         }
       });
+  }
 })
 
