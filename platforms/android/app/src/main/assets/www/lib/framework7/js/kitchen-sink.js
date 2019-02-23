@@ -1219,9 +1219,9 @@ function onDeviceReady() {
                 string = '<div class="swiper-slide" > '+
                 
                 '<div '+
-                'style="background-size:100%;background-repeat:no-repeat;height: 100%;width: 111%;margin-top: -17px;'+"background-image:url('"+v.image+"')"+'"'+'>'+
+                'style="background-size:100%;background-repeat:no-repeat;height: 100%;width: 100%;margin-top: -17px;'+"background-image:url('"+v.image+"')"+'"'+'>'+
            
-                '<center style="height:220px;background-color: rgba(255,255,255,0.5);padding-bottom: 9px;">'+
+                '<center style="height:220px;background-color: rgba(255,255,255,0.01);padding-bottom: 9px;">'+
                 '<div style="background-color:rgba(255,255,255,0);"><H2></H2> '+               
                 // ' <H4> '+v.alamat+'</H4> '+                
                 '<p class="buttons-row" >'+
@@ -7996,43 +7996,49 @@ $$(document).on('page:init', '.page[data-page="history-list"]', function (e) {
     success : function(r){
         var data = JSON.parse(r);
         $$.each(data.result,function(i,data){
+            /** logo destination*/
             if (imageExists(data.wallet_id_dest_url)){
                 img_dest = data.wallet_id_dest_url;
-            } else if(imageExists(data.wallet_id_origin_url)){
-                img_origin = data.wallet_id_origin_url;
-            }
-            else{
+            } else{
                 img_dest = "img/no_image.jpg";
+            }
+
+            /** logo origin */
+            if(imageExists(data.wallet_id_origin_url)){
+                img_origin = data.wallet_id_origin_url;
+            } else {
                 img_origin = "img/no_image.jpg";
             }
-
-            console.log(img_origin);
-
             
-            // var html =  
-              //   `<li class="hold-hapus-produk-" data-id=`+data.id+`>
-              //       <a href="#" class="item-link item-content">
-              //           <div class="item-media">
-              //               <img src="`+img_origin+`" width="80">
-              //           </div>
-              //           <div class="item-inner">
-              //               <div class="item-title-row" style="background-image:url()">
-              //                   <div class="item-title" style="width: 150px;">
-              //                       <b><i>`+data.transaction_date+`</i></b>
-              //                   </div>
-              //               </div>
-              //               <div class="item-title-row" style="background-image:url()">
-              //                   <div class="item-after" style="height: 150px;">Rp. `+data.ammount+`</div>
-              //               </div>
-              //           </div>
-              //           <div class="item-media">
-              //               <img src="`+img+`" width="80">
-              //           </div>
-              //       </a>
-              //   </li>`
+            var html =  
+                `<li class="hold-hapus-produk-" data-id=`+data.id+`>
+                    <a href="#" class="item-link item-content">
+                        <div class="item-media">
+                            <img src="`+img_origin+`" class="custom-image-history">
+                        </div>
+                        <div class="item-inner" style="margin-left: 50px">
+                            <div class="item-title-row" style="background-image:url()">
+                                <div class="item-title" style="width: 150px;">
+                                    <div style="margin-left: 50px">
+                                        <i class="fa fa-angle-double-right"></i>
+                                        <i class="fa fa-angle-double-right"></i>
+                                        <i class="fa fa-angle-double-right"></i>
+                                    </div>
+                                    <b><i>`+data.transaction_date+`</i></b>
+                                </div>
+                            </div>
+                            <div class="item-title-row" style="background-image:url()">
+                                <div class="item-after" style="margin-left: 30px;">Rp. `+data.ammount+`</div>
+                            </div>
+                        </div>
+                        <div class="item-media">
+                            <img src="`+img_dest+`" class="custom-image-history" style="margin-left: -37px">
+                        </div>
+                    </a>
+                </li>`
           
 
-              // $$("#ul-history-list").append(html);
+              $$("#ul-history-list").append(html);
               // alert(html);
             });
 
