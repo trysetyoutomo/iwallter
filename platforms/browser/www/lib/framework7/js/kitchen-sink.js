@@ -8086,9 +8086,8 @@ function getSaldo(user_id){
               // alert("123");
               // $$(".wallet[value='"+v.wallet_id+"']").addClass("btn-aktivasi"); 
           }else{ // jika tersedia
-              $(".wallet[value='"+v.wallet_id+"']").removeClass("btn-harus-aktivasi"); 
-              $$(".wallet[value='"+v.wallet_id+"']").css("text-decoration","none"); 
               $$(".wallet[value='"+v.wallet_id+"']").find(".jml_wallet").html("Rp."+numberWithCommas(v.ammount));
+              $(".wallet[value='"+v.wallet_id+"']").removeClass("btn-harus-aktivasi"); 
           }
               // if (v.isActive=="1"){
               // }else{
@@ -8126,66 +8125,47 @@ $$(document).on('click', '.btn-harus-aktivasi', function (e) {
 function inputOTP(nomor,wallet_id){
     myApp.prompt('Silahkan Masukan kode OTP ', 'Aktivasi',
       function (nilai) {
+         $$.ajax({
+    // https://35utech.com/jenius/index.php?r=jenius/transfer&user_id=1&wallet_origin_id=1&wallet_dest_id=2&ammount=3000&fee=100
+            url : server+"/index.php?r=jenius/SaveWalletUsers",
+            data : {
+                wallet_id : wallet_id,
+                user_name : "Try Setyo",
+                wallet_phone : nomor,
+                user_id : window.localStorage.getItem("username")
+            },
+            success:function(r){
+                      var  json = JSON.parse(r);
+                      if (json.status==true){
+                         myApp.addNotification({
+                          title: 'Berhasil!',
+                          message: json.message
+                        });
+                         getSaldo(window.localStorage.getItem("username"))
+                      }else{
+                        myApp.addNotification({
+                          title: 'Gagal!',
+                          message: json.message
+                        });
+                      }
 
-        // ajax start
-     $$.ajax({
-    url : server+"/index.php?r=jenius/SaveWalletUsers",
-    data : {
-        wallet_id : wallet_id,
-        user_name : "Try Setyo Utomo",
-        wallet_phone : nomor,
-        user_id : window.localStorage.getItem("username")
-    },
-    beforeSend : function(e){
-      
-    },
-        success : function(r){
-      // alert(r)  ;
-      var  json = JSON.parse(r);
-      if (json.status==true){
-        getSaldo(window.localStorage.getItem("username"));
-        myApp.addNotification({
-          title: 'Berhasil!',
-          message: json.message
+            }
+
         });
-        // var gambar1 =  $$("#tampil1").attr('src');
-        // var gambar2 =  $$("#tampil2").attr('src');      
-        // // alert(gambar1);
-        // mainView.router.load({
-        //   url:"berhasil.html",
-        //     query:{
-        //       tampilimg1:gambar1,
-        //       tampilimg2:gambar2
-        //     }    
-        // });
-        // alert("123");
-  
-
-      }else{
-        // myApp.addNotification({
-        //   title: 'Gagal!',
-        //   message: json.message
-        // });
-      }
-    }
-    });
-        //end ajax
-        // alert(nomor);
-        // alert(nilai);
       }
     ); 
 }
 
 $$(document).on('click', '.btn-fix-transfer', function (e) {
-    // https://35utech.com/jenius/index.php?r=jenius/transfer&user_id=1&wallet_origin_id=1&wallet_dest_id=2&ammount=3000&fee=100
   $$.ajax({
-    url : server+"/index.php?r=jenius/transfer",
-    data : {
-    user_id : window.localStorage.getItem("username"),
-    wallet_origin_id : $$("#tampil1").attr("value"),
-    wallet_dest_id : $$("#tampil2").attr("value"),
-    ammount : $$("#nominal").val(),
-    fee : 0,
+    // https://35utech.com/jenius/index.php?r=jenius/transfer&user_id=1&wallet_origin_id=1&wallet_dest_id=2&ammount=3000&fee=100
+		url : server+"/index.php?r=jenius/transfer",
+		data : {
+      user_id : window.localStorage.getItem("username"),
+      wallet_origin_id : $$("#tampil1").attr("value"),
+      wallet_dest_id : $$("#tampil2").attr("value"),
+      ammount : $$("#nominal").val(),
+      fee : 0,
     },
 		beforeSend : function(e){
       
@@ -8240,3 +8220,51 @@ $$(document).on('page:init', '.page[data-page="transfer"]', function (e) {
   // alert(tampil2);
 });
 
+
+$$(document).on('click', '.saved_prom', function (e) {
+    var id_promo = $$(this).attr("data-id");
+    var user_id = window.localStorage.getItem("username")
+    // alert(id+" - "+user);
+    // alert("WEW");
+      $$.ajax({
+        url: server+'/index.php?r=jenius/savedPromo',
+        method: 'GET', 
+        data : {
+            id_promo: id_promo,
+            user_id: user_id
+        },
+        success:function(data){
+          var dataObj  = JSON.parse(data)
+          console.log(data);
+          if (dataObj.status) {
+            
+          //   /** encode username */
+          //   var encodeuser = btoa(dataObj.data.username);
+          //   window.localStorage.setItem('username', encodeuser)
+            
+            // customAlert('Berhasil Menambahkan Ke Favorite', 'Informasi');
+            myApp.addNotification({
+                title: 'Berhasil Menambahkan Ke Favorite',
+                message: data.message
+            });
+          } else {
+            myApp.addNotification({
+                title: dataObj.message,
+                message: 'Peringatan'
+            });
+            // customAlert(dataObj.message, 'Peringatan');
+          }
+        },
+        error:function(err){
+            myApp.addNotification({
+                title: 'Oops terjadi kesalahan',
+                message: 'Peringatan'
+            });
+          customAlert('Oops terjadi kesalahan', 'Peringatan');
+        }
+      });
+})
+
+$$(document).on('page:init', '.page[data-page="history-list"]', function (e) {
+    refreshHistory();
+});
