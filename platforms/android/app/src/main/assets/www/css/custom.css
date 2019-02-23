@@ -81,7 +81,7 @@
     top: 10%!important;
 }
 .swiper-wrapper{
-    background-color:rgb(13, 166, 236,1)!important;
+    /*background-color:rgb(13, 166, 236,1)!important;*/
 }
 .welcomescreen-text{
     color: black!important;
@@ -215,6 +215,13 @@ div{
     background-color: #84d2f1 !important;
 }
 .saved_prom{    
+    display: block;
+    position: absolute;
+    right: 10px;
+    margin-top: -50px;
+    font-size: 18px;
+}
+.saved_prom_1{    
     display: block;
     position: absolute;
     right: 10px;
