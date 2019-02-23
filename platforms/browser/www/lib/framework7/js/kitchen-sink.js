@@ -4504,7 +4504,7 @@ function getListOrder(username, tabActive){
                       '<div class="item-title-row" style="background-image:url()">'+
                         '<div class="item-after" style="height: 150px;">'+data.description+'</div>'+
                       '</div>'+
-                      '<i class="fa fa-heart saved_prom" data-id="'+data.id+'" aria-hidden="true"></i>'+
+                      '<i class="fa fa-heart saved_prom_1" data-id="'+data.id+'" aria-hidden="true"></i>'+
                       // '<div class="item-text" style="width:80px">'+
                       //   '<i style="float:none;display:none" class="fa fa-plus-square fa-2x btn-add-qty"></i>&nbsp;'+
                       //   '<input readonly item_id="'+v.id+'" ukm_id="'+v.id+'" class="order-qty-final"  type="text"  style="width:40px;border:1px solid gray;padding:5px;display:inline-block;float:right" />'+
@@ -7913,23 +7913,26 @@ $$('.open-password').on('click', function () {
 //   alert("ngghgh");
 // });
 $$(document).on('click', '.wallet', function (e) {
+  var change1 =  $("#change1").attr('nilai');
+  var change2 =  $("#change2").attr('nilai');
   var gambar = $(this).attr('gambar');
   var pk = $(this).attr('value');
-  
+
   var change1 =  $("#change1").attr('nilai');
+  var change2 =  $("#change2").attr('nilai');
   if(change1 == ""){
     $("#change1").attr('src',gambar);
+    $("#change1").attr('nilai',pk);
   }else{
     $("#change2").attr('src',gambar);
+    $("#change2").attr('nilai',pk);
   }
-  $("#change1").attr('nilai',pk);
+
 });
 
-//        myApp.addNotification({
-//         title: 'Halo',
-//         message: data.pesan
-//        });
 
+
+//reset data
 $$(document).on('click', '.reset', function (e) {
   $("#change1").attr('nilai',"");
   $("#change2").attr('nilai',"");
@@ -7937,55 +7940,36 @@ $$(document).on('click', '.reset', function (e) {
   $("#change2").attr('src',"");
 });
 
-$$(document).on('click', '.saved_prom', function (e) {
-    var id_promo = $$(this).attr("data-id");
-    var user_id = window.localStorage.getItem("username")
-    // alert(id+" - "+user);
-    // alert("WEW");
-      $$.ajax({
-        url: server+'/index.php?r=jenius/savedPromo',
-        method: 'GET', 
-        data : {
-            id_promo: id_promo,
-            user_id: user_id
-        },
-        success:function(data){
-          var dataObj  = JSON.parse(data)
-          console.log(data);
-          if (dataObj.status) {
-            
-          //   /** encode username */
-          //   var encodeuser = btoa(dataObj.data.username);
-          //   window.localStorage.setItem('username', encodeuser)
-            
-            // customAlert('Berhasil Menambahkan Ke Favorite', 'Informasi');
-            myApp.addNotification({
-                title: 'Berhasil Menambahkan Ke Favorite',
-                message: data.message
-            });
-          } else {
-            myApp.addNotification({
-                title: dataObj.message,
-                message: 'Peringatan'
-            });
-            // customAlert(dataObj.message, 'Peringatan');
-          }
-        },
-        error:function(err){
-            myApp.addNotification({
-                title: 'Oops terjadi kesalahan',
-                message: 'Peringatan'
-            });
-          customAlert('Oops terjadi kesalahan', 'Peringatan');
-        }
-      });
-})
-
-$$(document).on('page:init', '.page[data-page="history-list"]', function (e) {
-    refreshHistory();
-    $$('.refresh-history').on('click', function () {
-        refreshHistory();
+// mengirim data ke halaman konfirmasi
+$$(document).on('click', '.kirim_konfirmasi', function (e) {
+  var change1 =  $("#change1").attr('nilai');
+  var change2 =  $("#change2").attr('nilai');
+  if (change1==""|| change2==""){
+    myApp.addNotification({
+     title: 'oops',
+     message: 'Wallet Belum Dipilih'
     });
+
+}else if (change1 == change2){
+  myApp.addNotification({
+   title: 'oops',
+   message: 'Wallet Tidak Boleh Sama'
+  });
+
+}else{
+  var gambar1 =  $("#change1").attr('src');
+  var gambar2 =  $("#change2").attr('src');
+       mainView.router.load({
+       url:"konfirmasi.html",
+       query:{
+         tampil1: change1,
+         tampil2: change2,
+         tampilimg1:gambar1,
+         tampilimg2:gambar2
+         
+       }    
+     });
+    }
 });
 
  function refreshHistory(){
@@ -8041,9 +8025,120 @@ $$(document).on('page:init', '.page[data-page="history-list"]', function (e) {
               $$("#ul-history-list").append(html);
               // alert(html);
             });
+// menampilkan data dari halaman transfer
+$$(document).on('page:init', '.page[data-page="konfirmasi"]', function (e) {
+  var tampil1 = e.detail.page.query.tampil1;
+  var tampil2 = e.detail.page.query.tampil2;
+  var tampilimg1 = e.detail.page.query.tampilimg1;
+  var tampilimg2 = e.detail.page.query.tampilimg2;
+  // var tampil2 = e.detail.page.query.change2;
+  // var tampil_gambar1 = e.detail.page.query.change2;
+  // var tampil_gambar2 = e.detail.page.query.change2;
 
-        },error: function(e){
-          alert(JSON.stringify(e));
-        }
-      });
-   }
+  $("#tampil1").attr('src',tampilimg1);
+  $("#tampil2").attr('src',tampilimg2);
+  $("#tampil1").attr('value',tampil1);
+  $("#tampil2").attr('value',tampil2);
+  // $("#tampil2").attr('src',gambar);
+  // alert(tampil2);
+});
+
+$$(document).on('click', '.btn-berhasil-kembali', function (e) {
+  mainView.router.load({
+    url:"transfer.html",
+  });
+});
+$$(document).on('page:init', '.page[data-page="page-berhasil"]', function (e) {
+  var tampilimg1 = e.detail.page.query.tampilimg1;
+  var tampilimg2 = e.detail.page.query.tampilimg2;
+
+  // alert(tampilimg1);
+
+  $("#tampil1_berhasil").attr('src',tampilimg1);
+  $("#tampil2_berhasil").attr('src',tampilimg2);
+});
+
+
+// menampilkan data dari halaman transfer
+function getSaldo(user_id){
+  $$.ajax({
+		url : server+"/index.php?r=jenius/getSaldo",
+		data : "user_id="+user_id,
+		beforeSend : function(e){
+		},
+		success : function(r){
+      // alert(r)  ;
+      var  json = JSON.parse(r);
+      if (json.success==true){
+        $$.each(json.data,function(i,v){
+          $(".wallet[value='"+v.wallet_id+"']").find(".jml_wallet").html("Rp."+numberWithCommas(v.ammount));
+        });
+      
+      }
+      
+    }
+  });
+}
+$$(document).on('click', '.btn-fix-transfer', function (e) {
+  $$.ajax({
+    // https://35utech.com/jenius/index.php?r=jenius/transfer&user_id=1&wallet_origin_id=1&wallet_dest_id=2&ammount=3000&fee=100
+		url : server+"/index.php?r=jenius/transfer",
+		data : {
+      user_id : window.localStorage.getItem("username"),
+      wallet_origin_id : $$("#tampil1").attr("value"),
+      wallet_dest_id : $$("#tampil2").attr("value"),
+      ammount : $$("#nominal").val(),
+      fee : 0,
+    },
+		beforeSend : function(e){
+      
+    },
+		success : function(r){
+      // alert(r)  ;
+      var  json = JSON.parse(r);
+      if (json.success==true){
+        myApp.addNotification({
+          title: 'Berhasil!',
+          message: json.message
+        });
+        var gambar1 =  $$("#tampil1").attr('src');
+        var gambar2 =  $$("#tampil2").attr('src');      
+        // alert(gambar1);
+        mainView.router.load({
+          url:"berhasil.html",
+            query:{
+              tampilimg1:gambar1,
+              tampilimg2:gambar2
+            }    
+        });
+        // alert("123");
+  
+
+      }else{
+        myApp.addNotification({
+          title: 'Gagal!',
+          message: json.message
+        });
+      }
+    }
+    });
+});
+$$(document).on('page:init', '.page[data-page="transfer"]', function (e) {
+  var user_id = window.localStorage.getItem("username");
+  getSaldo(user_id);
+  // alert("123");
+  // var tampil1 = e.detail.page.query.tampil1;
+  // var tampil2 = e.detail.page.query.tampil2;
+  // var tampilimg1 = e.detail.page.query.tampilimg1;
+  // var tampilimg2 = e.detail.page.query.tampilimg2;
+  // // var tampil2 = e.detail.page.query.change2;
+  // // var tampil_gambar1 = e.detail.page.query.change2;
+  // // var tampil_gambar2 = e.detail.page.query.change2;
+
+  // $("#tampil1").attr('src',tampilimg1);
+  // $("#tampil2").attr('src',tampilimg2);
+  // $("#tampil1").attr('value',tampil1);
+  // $("#tampil2").attr('value',tampil2);
+  // $("#tampil2").attr('src',gambar);
+  // alert(tampil2);
+});
